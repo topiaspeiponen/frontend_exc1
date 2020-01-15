@@ -4,12 +4,14 @@ import {
 } from 'react-native';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
+import { MediaContext } from '../contexts/MediaContext';
 
 const List = (props) => {
+  const [media, setMedia] = useContext(MediaContext);
   console.log(props);
   return (
     <FlatList
-      data={props.mediaArray}
+      data={media}
       renderItem={({item}) => <ListItem singleMedia={item} />}
     />
   );
