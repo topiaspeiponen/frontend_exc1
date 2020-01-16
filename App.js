@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
 import List from './components/List';
-import MediaProvider from './contexts/MediaContext';
+import {MediaProvider} from './contexts/MediaContext';
+
 
 const App = () => {
   return (
-    <View style={styles.container}>
-      <List mediaArray={MediaProvider} />
-    </View>
+    <MediaProvider>
+      <View style={styles.container}>
+        <List/>
+      </View>
+    </MediaProvider>
   );
 };
 

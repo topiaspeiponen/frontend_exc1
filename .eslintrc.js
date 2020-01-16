@@ -21,7 +21,8 @@ module.exports = {
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "no-console": 0,
-    "require-jsdoc": 0
+    "require-jsdoc": 0,
+    "linebreak-style": 0
   },
   settings: {
     react: {

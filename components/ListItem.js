@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import PropTypes from 'prop-types';
 
 const ListItem = (props) => {
@@ -31,7 +25,7 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: '#03fcd3',
     marginBottom: 5,
-    borderRadius: 16,
+    borderRadius: 4,
   },
   imagebox: {
     flex: 1,
@@ -41,7 +35,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   textbox: {
-    flex: 2,
+    flex: 1,
     padding: 10,
   },
   listTitle: {
