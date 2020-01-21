@@ -6,7 +6,15 @@ const mediaUrl = 'http://media.mw.metropolia.fi/wbma/uploads/';
 
 const ListItem = (props) => {
   return (
-    <TouchableOpacity style={styles.row}>
+    <TouchableOpacity style={styles.row}
+      onPress={
+        () => {
+          props.navigation.push('Single',
+              {
+                file: props.singleMedia,
+              });
+        }
+      }>
       <View style={styles.imagebox}>
         <Image
           style={styles.image}

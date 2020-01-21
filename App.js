@@ -1,24 +1,21 @@
-import React, {useContext} from 'react';
-import {StyleSheet, View} from 'react-native';
-import List from './components/List';
+import React from 'react';
 import {MediaProvider} from './contexts/MediaContext';
+import Navigator from './navigators/navigator';
 
 
 const App = () => {
   return (
     <MediaProvider>
-      <View style={styles.container}>
-        <List/>
-      </View>
+      <Navigator></Navigator>
     </MediaProvider>
   );
 };
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
   container: {
     paddingTop: 40,
     backgroundColor: '#fff',
   },
-});
+});*/
 
 export default App;
