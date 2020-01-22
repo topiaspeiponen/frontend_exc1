@@ -9,7 +9,7 @@ const List = (props) => {
   const [media, setMedia] = useContext(MediaContext);
   const [data, loading] = getAllMedia();
   setMedia(data);
-  console.log(media, data);
+  // console.log(media, data);
   return (
     <FlatList
       data={media}

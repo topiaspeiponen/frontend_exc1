@@ -33,19 +33,21 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     padding: 15,
-    backgroundColor: '#03fcd3',
-    marginBottom: 5,
-    borderRadius: 4,
+    backgroundColor: 'white',
+    margin: 5,
+    borderWidth: 1,
+    borderColor: 'black',
+    elevation: 10,
   },
   imagebox: {
     flex: 1,
   },
   image: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 64,
   },
   textbox: {
-    flex: 1,
+    flex: 2,
     padding: 10,
   },
   listTitle: {
