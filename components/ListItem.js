@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import PropTypes from 'prop-types';
+
 
 const ListItem = (props) => {
   return (
@@ -19,7 +14,7 @@ const ListItem = (props) => {
       </View>
       <View style={styles.textbox}>
         <Text style={styles.listTitle}>{props.singleMedia.title}</Text>
-        <Text>{props.singleMedia.description}</Text>
+        <Text style={styles.basicText}>{props.singleMedia.description}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -29,9 +24,11 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     padding: 15,
-    backgroundColor: '#03fcd3',
-    marginBottom: 5,
-    borderRadius: 16,
+    backgroundColor: 'white',
+    margin: 5,
+    borderWidth: 1,
+    borderColor: 'black',
+    elevation: 10,
   },
   imagebox: {
     flex: 1,
@@ -47,6 +44,7 @@ const styles = StyleSheet.create({
   listTitle: {
     fontWeight: 'bold',
     fontSize: 20,
+    color: '#FF8F00',
     paddingBottom: 15,
   },
 });
