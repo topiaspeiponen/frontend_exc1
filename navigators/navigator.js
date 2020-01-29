@@ -1,6 +1,8 @@
+import React from 'react';
 import {createAppContainer, createSwitchNavigator, NavigationEvents} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {createStackNavigator} from 'react-navigation-stack';
+import {Icon} from 'native-base';
 import Home from '../views/Home';
 import Profile from '../views/Profile';
 import Single from '../views/Single';
@@ -24,9 +26,41 @@ const TabNavigator = createBottomTabNavigator(
       },
     },
     {
+      defaultNavigationOptions: ({navigation}) => ({
+        // eslint-disable-next-line react/display-name
+        tabBarIcon: () => {
+          const {routeName} = navigation.state;
+          let iconName;
+          if (routeName === 'Home') {
+            iconName = 'home';
+          } else if (routeName === 'Profile') {
+            iconName = 'person';
+          }
+
+          // You can return any component that you like here!
+          // eslint-disable-next-line react/react-in-jsx-scope
+          return <Icon
+            name={iconName}
+            size={25}
+          />;
+        },
+      }),
+    },
+    {
       initialRouteName: 'Home',
     },
 );
+
+TabNavigator.navigationOptions = ({navigation}) => {
+  const {routeName} = navigation.state.routes[navigation.state.index];
+
+  // You can do whatever you like here to pick the title based on the route name
+  const headerTitle = routeName;
+
+  return {
+    headerTitle,
+  };
+};
 
 const StackNavigator = createStackNavigator(
     // RouteConfigs

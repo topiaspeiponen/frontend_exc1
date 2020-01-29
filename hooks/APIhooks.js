@@ -77,4 +77,25 @@ const register = async (uName, uPass, uEmail, uFullname) => {
   }
 };
 
-export {getAllMedia, login, register};
+const getAvatar = async (userId) => {
+  const data = 'avatar_' + userId;
+
+  const fetchOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  try {
+    const response = await fetch(apiUrl + 'tags/' + data, fetchOptions);
+    const json = await response.json();
+    console.log(json);
+    return json;
+  } catch (e) {
+    console.log('error', e.message);
+  }
+};
+
+
+export {getAllMedia, login, register, getAvatar};

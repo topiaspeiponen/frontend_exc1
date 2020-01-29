@@ -1,11 +1,7 @@
 import React, {useContext} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  AsyncStorage,
-} from 'react-native';
+import {AsyncStorage} from 'react-native';
+import {Container, Header, Title, Content, Footer, FooterTab,
+  Button, Left, Right, Body, Icon, Text, Form, Item, H2} from 'native-base';
 import PropTypes from 'prop-types';
 import FormTextInput from '../components/FormTextInput';
 import {login, register} from '../hooks/APIhooks';
@@ -39,66 +35,86 @@ const Login = (props) => {
     }
   };
   return (
-    <View style={styles.container}>
-      <Text>Login</Text>
-      <View style={styles.form}>
-        <FormTextInput
-          autoCapitalize='none'
-          placeholder='username'
-          onChangeText={handleUsernameChange}
-          value={inputs.username}
-        />
-        <FormTextInput
-          autoCapitalize='none'
-          placeholder='password'
-          secureTextEntry={true}
-          onChangeText={handlePasswordChange}
-          value={inputs.password}
-        />
-        <Button title="Sign in!" onPress={signInAsync} />
-      </View>
-      <Text>Register</Text>
-      <View style={styles.form}>
-        <FormTextInput
-          autoCapitalize='none'
-          placeholder='username'
-          onChangeText={handleUsernameChange}
-          value={inputs.username}
-        />
-        <FormTextInput
-          autoCapitalize='none'
-          placeholder='password'
-          secureTextEntry={true}
-          onChangeText={handlePasswordChange}
-          value={inputs.password}
-        />
-        <FormTextInput
-          autoCapitalize='none'
-          placeholder='email'
-          onChangeText={handleEmailChange}
-          value={inputs.email}
-        />
-        <FormTextInput
-          autoCapitalize='none'
-          placeholder='full_name'
-          onChangeText={handleFullnameChange}
-          value={inputs.full_name}
-        />
-        <Button title="Register" onPress={registerAsync} />
-      </View>
-    </View>
+    <Container>
+      <Header>
+        <Body>
+          <Title>
+            MyApp
+          </Title>
+        </Body>
+      </Header>
+      <Content>
+        <Form>
+          {/* Login */}
+          <Title>
+            <H2>Login</H2>
+          </Title>
+          <Item>
+            <FormTextInput
+              autoCapitalize='none'
+              value={inputs.username}
+              placeholder='username'
+              onChangeText={handleUsernameChange}
+            />
+          </Item>
+          <Item>
+            <FormTextInput
+              autoCapitalize='none'
+              value={inputs.password}
+              placeholder='password'
+              secureTextEntry={true}
+              onChangeText={handlePasswordChange}
+            />
+          </Item>
+          <Button full onPress={signInAsync}><Text>Sign in!</Text></Button>
+        </Form>
+
+        {/* register form */}
+        <Form>
+          <Title>
+            <H2>Register</H2>
+          </Title>
+          <Item>
+            <FormTextInput
+              autoCapitalize='none'
+              value={inputs.username}
+              placeholder='username'
+              onChangeText={handleUsernameChange}
+            />
+          </Item>
+          <Item>
+            <FormTextInput
+              autoCapitalize='none'
+              value={inputs.email}
+              placeholder='email'
+              onChangeText={handleEmailChange}
+            />
+          </Item>
+          <Item>
+            <FormTextInput
+              autoCapitalize='none'
+              value={inputs.fullname}
+              placeholder='fullname'
+              onChangeText={handleFullnameChange}
+            />
+          </Item>
+          <Item>
+            <FormTextInput
+              autoCapitalize='none'
+              value={inputs.password}
+              placeholder='password'
+              secureTextEntry={true}
+              onChangeText={handlePasswordChange}
+            />
+          </Item>
+          <Button full onPress={registerAsync}>
+            <Text>Register!</Text>
+          </Button>
+        </Form>
+      </Content>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 40,
-  },
-});
 
 Login.propTypes = {
   navigation: PropTypes.object,

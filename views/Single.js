@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {Image} from 'react-native';
+import {Container, Content, Text, Card, CardItem, Body} from 'native-base';
 
 const mediaUrl = 'http://media.mw.metropolia.fi/wbma/uploads/';
 
@@ -7,28 +8,28 @@ const Single = (file) => {
   const {navigation} = file;
   console.log(file);
   console.log(mediaUrl + navigation.getParam('file', 'No image').filename);
-  const url = mediaUrl + (navigation.getParam('file', 'no image').filename);
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={{uri: mediaUrl + navigation.getParam('file', 'no image').filename}}></Image>
-      <Text>{navigation.getParam('file', 'no file').title}</Text>
-    </View>
+    <Container>
+      <Content>
+        <Card>
+          <CardItem>
+            <Image style={{width: 300, height: 300}} source={{uri: mediaUrl + navigation.getParam('file', 'no image').filename}}/>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <Text>
+                {navigation.getParam('file', 'no file').title}
+              </Text>
+              <Text>
+                {navigation.getParam('file', 'no file').description}
+              </Text>
+            </Body>
+          </CardItem>
+        </Card>
+      </Content>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 40,
-  },
-  image: {
-    width: 300,
-    height: 300,
-  }
-});
 
 export default Single;

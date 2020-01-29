@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {FlatList} from 'react-native';
+import {List as BaseList} from 'native-base';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
 import {MediaContext} from '../contexts/MediaContext';
@@ -11,8 +11,8 @@ const List = (props) => {
   setMedia(data);
   // console.log(media, data);
   return (
-    <FlatList
-      data={media}
+    <BaseList
+      dataArray={media}
       keyExtractor = {(item, index) => index.toString()}
       renderItem={
         ({item}) => <ListItem
