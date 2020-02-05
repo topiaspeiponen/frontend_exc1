@@ -97,5 +97,4 @@ const getAvatar = async (userId) => {
   }
 };
 
-
 export {getAllMedia, login, register, getAvatar};
