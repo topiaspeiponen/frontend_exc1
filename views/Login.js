@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {AsyncStorage} from 'react-native';
 import {Container, Header, Title, Content, Footer, FooterTab,
-  Button, Left, Right, Body, Icon, Text, Form, Item, H2} from 'native-base';
+  Button, Left, Right, Body, Icon, Text, Form, Item, H2, Card, CardItem} from 'native-base';
 import PropTypes from 'prop-types';
 import FormTextInput from '../components/FormTextInput';
 import {login, register} from '../hooks/APIhooks';
@@ -19,7 +19,20 @@ const Login = (props) => {
     inputs,
     errors,
     setErrors,
-    validateUsername} = useSignUpForm();
+    validateField,
+    validateOnSend,
+    checkAvail} = useSignUpForm();
+
+    const validationProperties = {
+    username: {username: inputs.username},
+    email: {email: inputs.email},
+    full_name: {full_name: inputs.full_name},
+    password: {password: inputs.password},
+    rePassword: {
+      password: inputs.password,
+      rePassword: inputs.rePassword,
+    },
+  };
   const signInAsync = async () => {
     try {
       console.log('username: ' + inputs.username + 'password: ' + inputs.password);
@@ -35,18 +48,26 @@ const Login = (props) => {
   };
 
   const registerAsync = async () => {
+    const regValid = validateOnSend(validationProperties);
+    console.log('reg field errors', errors);
+    if (!regValid) {
+      return;
+    }
+
     try {
-      if (inputs.password === inputs.rePassword) {
-        const result = await register(inputs.username, inputs.password, inputs.email, inputs.full_name);
-        console.log('user: ' + result);
-        // IF does not exist do somtihng
-        await signInAsync();
-        // else
-      } else {
-        setErrors('password', 'Password\'s do not match');
-      }
+      console.log('sen inputs', inputs);
+      const user = inputs;
+      delete user.confirmPassword;
+      const result = await register(inputs.username, inputs.password, inputs.email, inputs.full_name);
+      console.log('register', result);
+      signInAsync();
     } catch (e) {
-      console.log('error', e);
+      console.log('registerAsync error: ', e.message);
+      setErrors((errors) =>
+        ({
+          ...errors,
+          fetch: e.message,
+        }));
     }
   };
   return (
@@ -105,33 +126,21 @@ const Login = (props) => {
                 placeholder='username'
                 onChangeText={handleUsernameChange}
                 onEndEditing={async (evt) => {
-                  try {
-                    validateUsername();
-                    const text = evt.nativeEvent.text;
-                    const result = await fetch('http://media.mw.metropolia.fi/wbma/users/username/' + text);
-                    const json = await result.json();
-                    if (json.available) {
-                      setErrors('username', 'Username is available');
-                    } else {
-                      setErrors('username', 'Username is unavailable');
-                    }
-                  } catch (e) {
-                    console.log(e);
-                  }
-                }}
+                  checkAvail();
+                  validateField(validationProperties.username);
+                  }}
               />
             </Item>
-            {errors.username != 'undefined' &&
-              <Body>
-                <Text>{errors.username}</Text>
-              </Body>
-            }
             <Item>
               <FormTextInput
                 autoCapitalize='none'
                 value={inputs.email}
                 placeholder='email'
                 onChangeText={handleEmailChange}
+                onEndEditing={() => {
+                  validateField(validationProperties.email);
+                }}
+                error={errors.email}
               />
             </Item>
             <Item>
@@ -140,6 +149,10 @@ const Login = (props) => {
                 value={inputs.fullname}
                 placeholder='fullname'
                 onChangeText={handleFullnameChange}
+                onEndEditing={() => {
+                  validateField(validationProperties.full_name);
+                }}
+                error={errors.full_name}
               />
             </Item>
             <Item>
@@ -149,6 +162,10 @@ const Login = (props) => {
                 placeholder='password'
                 secureTextEntry={true}
                 onChangeText={handlePasswordChange}
+                onEndEditing={() => {
+                  validateField(validationProperties.password);
+                }}
+                error={errors.password}
               />
             </Item>
             <Item>
@@ -158,6 +175,10 @@ const Login = (props) => {
                 placeholder='Re-enter password'
                 secureTextEntry={true}
                 onChangeText={handleRePasswordChange}
+                onEndEditing={() => {
+                  validateField(validationProperties.rePassword);
+                }}
+                error={errors.rePassword}
               />
             </Item>
             <Button full onPress={registerAsync}>
@@ -169,6 +190,15 @@ const Login = (props) => {
               <Text>Login</Text>
             </Button>
           </Form>
+        }
+        {errors.fetch &&
+        <Card>
+          <CardItem>
+            <Body>
+              <Text>{errors.fetch}</Text>
+            </Body>
+          </CardItem>
+        </Card>
         }
       </Content>
     </Container>

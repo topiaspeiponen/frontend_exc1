@@ -4,31 +4,34 @@ import validate from 'validate.js';
 const constraints = {
   username: {
     presence: {
-      message: 'This field is required',
+      message: 'cannot be blank.',
     },
     length: {
       minimum: 3,
-      message: 'Your username must be at least 3 characters',
-    },
-  },
-  password: {
-    presence: {
-      message: 'This field is required',
-    },
-    length: {
-      minimum: 5,
-      message: 'Your password must be at least 3 characters',
-    },
-  },
-  fullname: {
-    format: {
-      pattern: '^[a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$',
-      message: 'Full name is not valid',
+      message: 'must be at least 3 characters',
     },
   },
   email: {
+    presence: {
+      message: 'cannot be blank.',
+    },
     email: {
-      message: 'This doesnt\'t look like a valid email address',
+      message: 'not valid.',
+    },
+  },
+  fullname: {
+    presence: 'cannot be blank.',
+  },
+  password: {
+    length: {
+      minimum: 5,
+      message: 'must be at least 5 characters',
+    },
+  },
+  rePassword: {
+    presence: 'cannot be blank.',
+    equality: {
+      attribute: 'password',
     },
   },
 };
@@ -90,18 +93,60 @@ const useSignUpForm = () => {
       }));
   };
 
-  const validateUsername = () => {
-    const valResult = validate({username: inputs.username}, constraints);
-    console.log('validateU', valResult);
+  const validateField = (attr) => {
+    const attrName = Object.keys(attr).pop(); // get the only or last item from array
+    const valResult = validate(attr, constraints);
+    console.log('valresult', valResult);
     let valid = undefined;
-    if (valResult) {
-      valid = valResult.username[0];
+    if (valResult[attrName]) {
+      valid = valResult[attrName][0]; // get just the first message
     }
     setErrors((errors) =>
       ({
         ...errors,
-        username: valid,
+        [attrName]: valid,
+        fetch: undefined,
       }));
+  };
+
+  const checkAvail = async () => {
+    const text = inputs.username;
+    try {
+      const result = await fetchGET('users/username', text);
+      console.log(result);
+      if (!result.available) {
+        setErrors((errors) =>
+          ({
+            ...errors,
+            username: 'Username not available.',
+          }));
+      }
+    } catch (e) {
+      setErrors((errors) =>
+        ({
+          ...errors,
+          fetch: e.message,
+        }));
+    }
+  };
+
+  const validateOnSend = (fields) => {
+    checkAvail();
+
+    for (const [key, value] of Object.entries(fields)) {
+      console.log(key, value);
+      validateField(value);
+    }
+
+    if (errors.username !== undefined ||
+      errors.email !== undefined ||
+      errors.full_name !== undefined ||
+      errors.password !== undefined ||
+      errors.confirmPassword !== undefined) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return {
@@ -110,7 +155,9 @@ const useSignUpForm = () => {
     handleRePasswordChange,
     handleEmailChange,
     handleFullnameChange,
-    validateUsername,
+    validateField,
+    checkAvail,
+    validateOnSend,
     inputs,
     errors,
     setErrors,

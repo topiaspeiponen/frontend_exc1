@@ -22,7 +22,9 @@ const Profile = (props) => {
       console.log('avatar: ' + avatar);
       console.log('user: ' + user);
       setUser(user);
-      setAvatar(avatarGet[0]);
+      if (avatarGet !== undefined ) {
+        setAvatar(avatarGet[0]);
+      }
     } catch (e) {
       console.log('error: ' + e);
     }
@@ -36,9 +38,11 @@ const Profile = (props) => {
     <Container>
       <Content>
         <Card>
+          {avatar !== undefined &&
           <CardItem>
             <Image source={{uri: mediaUrl + avatar.filename}} style={{width: 300, height: 300}}></Image>
           </CardItem>
+          }
           <CardItem>
             <Text>Username: {user.username}</Text>
           </CardItem>

@@ -2,6 +2,7 @@ import {useState, useEffect, useImperativeHandle} from 'react';
 
 const apiUrl = 'http://media.mw.metropolia.fi/wbma/';
 
+
 const getAllMedia = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
