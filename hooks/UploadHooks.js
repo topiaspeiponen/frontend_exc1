@@ -1,10 +1,34 @@
-import {useState} from 'react-native';
-import {NavigationEvents} from 'react-navigation';
+import {useState} from 'react';
+import {AsyncStorage} from 'react-native';
+import {getAllMedia} from '../hooks/APIhooks';
+import validate from 'validate.js';
 
 const apiUrl = 'http://media.mw.metropolia.fi/wbma/';
 
-const useUploadForm = (props) => {
+const constraints = {
+  title: {
+    presence: {
+      message: 'Cannot be blank',
+    },
+    length: {
+      minimum: 3,
+      message: 'must be at least 3 characters',
+    },
+  },
+  description: {
+    presence: {
+      message: 'Cannot be blank',
+    },
+    length: {
+      minimum: 5,
+      message: 'must be at least 5 characters',
+    },
+  },
+}
+
+const useUploadForm = () => {
   const [uploadInputs, setUploadInputs] = useState({});
+  const [errors, setErrors] = useState({});
   const formData = new FormData();
 
   const handleTitleChange = (text) => {
@@ -21,9 +45,10 @@ const useUploadForm = (props) => {
         description: text,
       }));
   };
-  const handleUpload = async (result) => {
+  const handleUpload = async (image, navigation, setMedia) => {
     // ImagePicker saves the taken photo to disk and returns a local URI to it
-    const localUri = result.uri;
+    console.log(image);
+    const localUri = image.uri;
     const filename = localUri.split('/').pop();
 
     // Infer the type of the image
@@ -39,15 +64,27 @@ const useUploadForm = (props) => {
     formData.append('title', uploadInputs.title);
     formData.append('description', uploadInputs.description);
 
-    const response = await fetch(apiUrl + 'media', {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+
+      const response = await fetch(apiUrl + 'media', {
       method: 'POST',
       body: formData,
       headers: {
-        'content-type': 'multipart/form-data',
+        'x-access-token': token,
       },
-    });
-    console.log('post file ', response);
-
+      });
+      const json = await response.json();
+      console.log('post file ', json);
+      console.log('json message status', json.message)
+      if (json.message) {
+        /*const [data, loading] = getAllMedia();
+        setMedia(data); REFRESHING DONT WORK FOR SOME REASON*/
+        navigation.push('Home');
+      }
+  } catch(e) {
+    console.log('error: ' + e);
+  }
   };
   return {
     handleTitleChange,
@@ -55,6 +92,9 @@ const useUploadForm = (props) => {
     uploadInputs,
     setUploadInputs,
     handleUpload,
+    constraints,
+    errors,
+    setErrors,
   };
 };
 

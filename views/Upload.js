@@ -1,19 +1,82 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {Image} from 'react-native';
 import {Container, Content, Text, Form, Item, Input, Body, Header, Title, Button} from 'native-base';
 import useUploadForm from '../hooks/UploadHooks';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import {MediaContext} from '../contexts/MediaContext';
+import {validateField} from '../utils/validation';
+import FormTextInput from '../components/FormTextInput'
+import validate from 'validate.js';
 
 const Upload = (props) => {
-  const [image, setImage] = useState({});
+  const [media, setMedia] = useContext(MediaContext);
+  const [image, setImage] = useState(null);
+  const [ready, setReady] = useState();
 
   const {handleTitleChange,
     handleDescriptionChange,
     uploadInputs,
+    setUploadInputs,
     handleUpload,
+    constraints,
+    errors,
+    setErrors,
   } = useUploadForm();
+
+  const validationProperties = {
+    title: {title: uploadInputs.title},
+    description: {description: uploadInputs.description},
+  };
+
+  const validate = (field, value) => {
+    console.log('validating', validationProperties[field]);
+    setErrors((errors) =>
+      ({
+        ...errors,
+        [field]: validateField({[field]: value},
+            constraints),
+        fetch: undefined,
+      }));
+  };
+
+  const resetForm = () => {
+    setErrors({});
+    setUploadInputs({});
+    setImage(null);
+  };
+
+  const upload = () => {
+    console.log('upload errors', errors);
+    handleUpload(image, props.navigation, setMedia);
+    resetForm();
+  };
+
+  const titleChange = (text) => {
+    handleTitleChange(text);
+    validate('title', text);
+  };
+
+  const descriptionChange = (text) => {
+    handleDescriptionChange(text);
+    validate('description', text);
+  };
+
+  const checkErrors = () => {
+    console.log('errors for upload', errors);
+    if (errors.title !== undefined ||
+      errors.description !== undefined) {
+      setReady(false);
+    } else {
+      console.log('setting ready to true');
+      setReady(true);
+    }
+  };
+
+  useEffect(() => {
+    checkErrors();
+  }, [errors]);
 
   const componentDidMount = () => {
     getPermissionAsync();
@@ -38,8 +101,6 @@ const Upload = (props) => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
       setImage(result);
     }
@@ -57,27 +118,34 @@ const Upload = (props) => {
       <Content>
         <Form>
           <Title>Upload</Title>
-          {image &&
+          {image !== null &&
           <Image source={{uri: image.uri}} style={{width: 300, height: 300}}></Image>
           }
           <Item>
-            <Input placeholder="Title"
-              onChangeText={handleTitleChange}/>
+            <FormTextInput placeholder="Title"
+              value={uploadInputs.title}
+              onChangeText={titleChange}/>
           </Item>
           <Item last>
-            <Input placeholder="Description"
-              onChangeText={handleDescriptionChange}/>
+            <FormTextInput placeholder="Description"
+              value={uploadInputs.description}
+              onChangeText={descriptionChange}/>
           </Item>
           <Button full onPress={_pickImage}>
             <Text>Select a file</Text>
           </Button>
-          <Button full dark onPress={handleUpload(image)}>
+          {image !== null && ready &&
+          <Button full dark onPress={upload}>
             <Text>Upload a file</Text>
+          </Button>
+          }
+          <Button dark full onPress={resetForm}>
+            <Text>Reset form</Text>
           </Button>
         </Form>
       </Content>
     </Container>
   );
-};
+}
 
 export default Upload;
